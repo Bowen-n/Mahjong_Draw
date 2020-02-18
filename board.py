@@ -74,10 +74,11 @@ class Board:
             self.tile_in_hand = self._check_in_hand()
             if self._check_succeed():
                 print('Success!')
-                sys.exit()
+                return 1
             if self._check_fail():
                 print('Failed!')
-                sys.exit()
+                return -1
+        return 0
 
 
     def get_len(self):
@@ -131,10 +132,12 @@ class Board:
         repeat1, repeat2 = self._find_same_item(top_and_hand)
 
         # uncomment the follow code to print hint
-        # print('repeat1:{}, repeat2:{}, tile_in_hand:{}'.format(repeat1, repeat2, len(self.tile_in_hand)))
+        print('repeat1:{}, repeat2:{}, tile_in_hand:{}'.format(repeat1, repeat2, len(self.tile_in_hand)))
 
         if repeat1 == -1 and repeat2 == -1 and len(self.tile_in_hand) == 3:
             return True # failed
+        elif len(self.tile_in_hand) > 3 and repeat1 < 17 and repeat2 < 17:
+            return True
         else:
             return False
 
