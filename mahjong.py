@@ -20,10 +20,7 @@ while True:
     
     screen.fill(0)
     screen.blit(background, (0, 0))
-    board.display(screen)
-    # screen.blit(gameover, (320, 0))
-    # screen.blit(success, (320, 0))
-    key_pressed = pygame.key.get_pressed()
+    
     
     for event in pygame.event.get():
         if event.type == QUIT:
@@ -32,6 +29,7 @@ while True:
             position = pygame.mouse.get_pos()
             status = board.pop(position, screen)
     
+    board.display(screen)
     if status is not 0:
         break
     

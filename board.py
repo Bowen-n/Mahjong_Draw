@@ -101,10 +101,13 @@ class Board:
     def _update_in_hand(self):
         # 0 1 2 3 4
         tile_in_hand_new = []
-        repeat1, repeat2 = self._find_same_item(self.tile_in_hand)
+        repeat_list = self._find_same_item(self.tile_in_hand)
 
-        if repeat1 == -1 and repeat2 == -1:
+        if len(repeat_list) == 0:
             return self.tile_in_hand
+
+        repeat1 = repeat_list[0][0]
+        repeat2 = repeat_list[0][1]
 
         for index in range(len(self.tile_in_hand)):
             if index != repeat1 and index != repeat2:
@@ -120,6 +123,8 @@ class Board:
             if(len(self.col_list[col_index])>1):
                 if self._top_two_same(col_index):
                     return False
+        if len(self.tile_in_hand) < 3:
+            return False
 
         top_and_hand = []
 
@@ -130,17 +135,20 @@ class Board:
         for tile in self.tile_in_hand:
             top_and_hand.append(tile)
         
-        repeat1, repeat2 = self._find_same_item(top_and_hand)
+        repeat_list = self._find_same_item(top_and_hand)
 
         # uncomment the follow code to print hint
-        print('repeat1:{}, repeat2:{}, tile_in_hand:{}'.format(repeat1, repeat2, len(self.tile_in_hand)))
+        print(repeat_list)
 
-        if repeat1 == -1 and repeat2 == -1 and len(self.tile_in_hand) == 3:
-            return True # failed
-        elif len(self.tile_in_hand) > 3 and repeat1 < 17 and repeat2 < 17:
+        if len(self.tile_in_hand) == 3 and len(repeat_list) == 0:
+            return True
+        elif len(self.tile_in_hand) > 3:
+            for repeat_item in repeat_list:
+                if repeat_item[0] > 16 or repeat_item[1] > 16:
+                    return False
             return True
         else:
-            return False
+            return False        
 
 
     def _check_succeed(self):
@@ -153,13 +161,13 @@ class Board:
         
 
     def _find_same_item(self, array):
-        repeat1 = -1; repeat2 = -1
+        same_list = []
+        # repeat1 = -1; repeat2 = -1
         for i in range(len(array)-1):
             for j in range(i+1, len(array)):
                 if array[i].name == array[j].name:
-                    repeat1 = i; repeat2 = j
-                    break
-        return repeat1, repeat2
+                    same_list.append([i, j])
+        return same_list
 
 
     def _print_in_hand(self):
