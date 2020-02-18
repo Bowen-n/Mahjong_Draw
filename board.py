@@ -129,9 +129,13 @@ class Board:
         top_and_hand = []
 
         num_in_hand = len(self.tile_in_hand)
+
         for col_index in range(COL):
             if len(self.col_list[col_index]) > 0:
                 top_and_hand.append(self._top(col_index))
+            else:
+                top_and_hand.append(None)
+
         for tile in self.tile_in_hand:
             top_and_hand.append(tile)
         
@@ -164,7 +168,11 @@ class Board:
         same_list = []
         # repeat1 = -1; repeat2 = -1
         for i in range(len(array)-1):
+            if array[i] is None:
+                continue
             for j in range(i+1, len(array)):
+                if array[j] is None:
+                    continue
                 if array[i].name == array[j].name:
                     same_list.append([i, j])
         return same_list
