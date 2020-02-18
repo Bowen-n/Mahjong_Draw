@@ -11,6 +11,7 @@ pygame.display.set_caption('Mahjong')
 
 background = pygame.image.load('./res/background.jpg')
 gameover = pygame.image.load('./res/gameover.jpg')
+success = pygame.image.load('./res/success_test.png')
 board = Board()
 
 status = 0
@@ -20,7 +21,8 @@ while True:
     screen.fill(0)
     screen.blit(background, (0, 0))
     board.display(screen)
-    screen.blit(gameover, (320, 0))
+    # screen.blit(gameover, (320, 0))
+    # screen.blit(success, (320, 0))
     key_pressed = pygame.key.get_pressed()
     
     for event in pygame.event.get():
@@ -36,7 +38,9 @@ while True:
     pygame.display.update()
 
 if status == -1:
-    screen.blit(gameover, (0, 0))
+    screen.blit(gameover, (320, 0))
+if status == 1:
+    screen.blit(success, (320, 0))
 
 while True:
     for event in pygame.event.get():

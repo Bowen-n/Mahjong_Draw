@@ -71,7 +71,7 @@ class Board:
             tile = self.col_list[col_index].pop(len(self.col_list[col_index])-1)
             self.tile_in_hand.append(tile)
             # update tile in hand
-            self.tile_in_hand = self._check_in_hand()
+            self.tile_in_hand = self._update_in_hand()
             if self._check_succeed():
                 print('Success!')
                 return 1
@@ -91,13 +91,14 @@ class Board:
 
     def _top_two_same(self, col_index):
         length = len(self.col_list[col_index])
+        # print('{}, {}'.format(self.col_list[col_index][length-1].name, self.col_list[col_index][length-2].name))
         if self.col_list[col_index][length-1] == self.col_list[col_index][length-2]:
             return True
         else:
             return False
 
 
-    def _check_in_hand(self):
+    def _update_in_hand(self):
         # 0 1 2 3 4
         tile_in_hand_new = []
         repeat1, repeat2 = self._find_same_item(self.tile_in_hand)
