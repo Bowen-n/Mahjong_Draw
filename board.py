@@ -1,7 +1,6 @@
 import math
 import os
 import random
-import sys
 
 import pygame
 from pygame.locals import *
@@ -75,7 +74,7 @@ class Board:
     def pop(self, pos):
         board_or_hand, col_index, row_index = self._list_position(pos)
 
-        if board_or_hand == 1:
+        if board_or_hand == 1 and row_index == len(self.col_list[col_index])-1:
             
             tile = self.col_list[col_index].pop(len(self.col_list[col_index])-1)
             while [col_index, row_index] in self.chosen:
@@ -253,14 +252,16 @@ class Board:
 
     def _check_fail(self):
 
+        if len(self.tile_in_hand) > 3:
+            return True
+        if len(self.tile_in_hand) < 3:
+            return False
+
         # top two same
         for col_index in range(COL):
             if(len(self.col_list[col_index])>1):
                 if self._top_two_same(col_index):
                     return False
-
-        if len(self.tile_in_hand) < 3:
-            return False
 
         top_and_hand = []
 
@@ -281,8 +282,6 @@ class Board:
         print(repeat_list)
 
         if len(self.tile_in_hand) == 3 and len(repeat_list) == 0:
-            return True
-        elif len(self.tile_in_hand) > 3:
             return True
         else:
             return False     
