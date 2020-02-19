@@ -114,10 +114,17 @@ class Board:
                 self.chosen.append([col, row])
 
         else:
-            return
+            return 0
         
         self._eliminate_chosen()
+        if self._check_succeed():
+            print('Success!')
+            return 1
+        if self._check_fail():
+            print('Failed!')
+            return -1
 
+        return 0
 
     def get_len(self):
         return len(self.tile_list)
@@ -220,7 +227,7 @@ class Board:
     def _top_two_same(self, col_index):
         length = len(self.col_list[col_index])
         # print('{}, {}'.format(self.col_list[col_index][length-1].name, self.col_list[col_index][length-2].name))
-        if self.col_list[col_index][length-1] == self.col_list[col_index][length-2]:
+        if self.col_list[col_index][length-1].name == self.col_list[col_index][length-2].name:
             return True
         else:
             return False
@@ -251,6 +258,7 @@ class Board:
             if(len(self.col_list[col_index])>1):
                 if self._top_two_same(col_index):
                     return False
+
         if len(self.tile_in_hand) < 3:
             return False
 

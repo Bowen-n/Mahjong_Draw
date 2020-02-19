@@ -30,7 +30,7 @@ while True:
             for index in range(len(pressed_array)):
                 if pressed_array[index]:
                     if index == 0: # left 
-                        board.choose(position)
+                        status = board.choose(position)
                     elif index == 2: # right
                         status = board.pop(position)
 
