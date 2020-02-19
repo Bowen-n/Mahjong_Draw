@@ -29,10 +29,10 @@ class Board:
         self.chosen = []
 
         # read all images
-        files = os.listdir('./res_test/tile')
+        files = os.listdir('./res/tile')
         for file in files:
             for i in range(4):
-                path = os.path.join('./res_test/tile', file)
+                path = os.path.join('./res/tile', file)
                 img = pygame.image.load(path)
                 name = file.split('.')[0]
                 tile = Tile(name, img)
