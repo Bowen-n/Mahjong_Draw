@@ -134,9 +134,9 @@ class Board:
 
                 # in hand
                 if pos1[0] == 17 and pos2[0] == 17:
-                    if self.tile_in_hand[pos1[1]].name == self.tile_in_hand[pos2[1]].name:
+                    if pos1[1] != pos2[1] and self.tile_in_hand[pos1[1]].name == self.tile_in_hand[pos2[1]].name:
                         new_in_hand = []
-                        for i in len(self.tile_in_hand):
+                        for i in range(len(self.tile_in_hand)):
                             if i != pos1[1] and i != pos2[1]:
                                 new_in_hand.append(self.tile_in_hand[i])
 
