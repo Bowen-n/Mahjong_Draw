@@ -67,7 +67,7 @@ class Board:
                 top_left = [(pos[0]+1) * 50, 544-(pos[1]+1)*64]
                 pygame.draw.rect(screen, (255,0,0), (top_left[0], top_left[1], 50, 64), 5)
             elif pos[0] == 17:
-                pygame.draw.rect(screen, (255,0,0), (350+pos[1]*50, 550 ,50 , 64), 5)
+                pygame.draw.rect(screen, (255,0,0), (400+pos[1]*50, 550 ,50 , 64), 5)
 
 
 
@@ -208,7 +208,7 @@ class Board:
         
         else:
             if position[1] >= 550 and position[1] <= 550 + TILE_COL:
-                index_in_hand = math.floor((position[0] - 350) / 50)
+                index_in_hand = math.floor((position[0] - 400) / 50)
                 if index_in_hand < len(self.tile_in_hand) and index_in_hand >= 0:
                     board_or_hand = 2
                     return (board_or_hand, 17, index_in_hand)
