@@ -56,7 +56,7 @@ class Board:
             pos_row += TILE_ROW
 
         # tile in hand
-        pos_row = 350
+        pos_row = 400
         for tile in self.tile_in_hand:
             screen.blit(tile.img, (pos_row, 550))
             pos_row += TILE_ROW

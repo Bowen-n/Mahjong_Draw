@@ -12,8 +12,9 @@ pygame.display.set_caption('Mahjong')
 background = pygame.image.load('./res/background.jpg')
 gameover = pygame.image.load('./res/gameover.jpg')
 success = pygame.image.load('./res/success_test.png')
-replay = pygame.image.load('./res/replay.png') # 120, 30
-
+replay = pygame.image.load('./res/replay.PNG') # 132, 30
+REPLAY = [132, 30]
+REPLAY_POS = [710, 565]
 game_continue = True
 
 
@@ -27,7 +28,7 @@ while game_continue:
         
         screen.fill(0)
         screen.blit(background, (0, 0))
-        screen.blit(replay, (850, 610))
+        screen.blit(replay, (REPLAY_POS[0], REPLAY_POS[1]))
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -39,8 +40,8 @@ while game_continue:
                 for index in range(len(pressed_array)):
                     if pressed_array[index]:
                         if index == 0: # left 
-                            if position[0]>=850 and position[0] <= 970 and \
-                               position[1]>=610 and position[1] <= 640:
+                            if position[0]>=REPLAY_POS[0] and position[0] <= REPLAY_POS[0]+REPLAY[0] and \
+                               position[1]>=REPLAY_POS[1] and position[1] <= REPLAY_POS[1]+REPLAY[1]:
                                 restart = True
                                 break
                             status = board.choose(position)
@@ -75,8 +76,8 @@ while game_continue:
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 position = pygame.mouse.get_pos()
-                if position[0]>=850 and position[0] <=970 and \
-                   position[1]>=610 and position[1] <= 640:
+                if position[0]>=REPLAY_POS[0] and position[0] <=REPLAY_POS[0]+REPLAY[0] and \
+                   position[1]>=REPLAY_POS[1] and position[1] <= REPLAY_POS[1]+REPLAY[1]:
                     flag = False
                     game_continue = True
                     break
