@@ -12,8 +12,8 @@ pygame.display.set_caption('Mahjong')
 background = pygame.image.load('./res/background.jpg')
 gameover = pygame.image.load('./res/gameover.jpg')
 success = pygame.image.load('./res/success_test.png')
-replay = pygame.image.load('./res/replay.PNG') # 132, 30
-REPLAY = [132, 30]
+replay = pygame.image.load('./res/replay.png') # 133, 30
+REPLAY = [133, 30]
 REPLAY_POS = [710, 565]
 game_continue = True
 
@@ -63,9 +63,9 @@ while game_continue:
         continue
 
     if status == -1:
-        screen.blit(gameover, (100, 550))
+        screen.blit(gameover, (100, 555))
     if status == 1:
-        screen.blit(success, (400, 550))
+        screen.blit(success, (400, 555))
     pygame.display.update()
 
     flag = True
