@@ -19,13 +19,39 @@ class Tile:
         self.img = img
 
 
+class Operation:
+    def __init__(self, op_type, tile, list_pos=None):
+        '''
+        op_type - 'draw' or 'eliminate'
+        list_pos - if type='eliminate', list_pos contains two positions (two eliminated)
+                   if type='draw', list_pos contains one position (the draw one)
+        '''
+        if op_type in ['draw', 'eliminate']:
+            self.type = op_type
+        else:
+            print('Operation type not found.')
+
+        self.list_pos = list_pos
+        self.tile = tile
+
+    def get_pos(self):
+        return self.list_pos
+    
+    def get_tile(self):
+        return self.tile
+
+    def get_type(self):
+        return self.type
+
+
 class Board:
 
     def __init__(self):
 
-        self.tile_in_hand = []
-        self.tile_list = []
-        self.chosen = []
+        self.tile_in_hand = [] # tiles in hand
+        self.tile_list = [] # tiles on board
+        self.chosen = [] # tiles selected by player (two at most)
+        self.op_history = [] # operation history
 
         # read all images
         files = os.listdir('./res/tile')
@@ -76,14 +102,24 @@ class Board:
 
         if board_or_hand == 1 and row_index == len(self.col_list[col_index])-1:
             
-            tile = self.col_list[col_index].pop(len(self.col_list[col_index])-1)
+            # remove the drawed tile from chosen list
+            tile = self.col_list[col_index].pop()
             while [col_index, row_index] in self.chosen:
                 self.chosen.remove([col_index, row_index])
                 
-
             self.tile_in_hand.append(tile)
+
             # update tile in hand
-            self.tile_in_hand = self._update_in_hand()
+            updated, updated_tile_in_hand, repeat_index = self._update_in_hand()
+            # self.tile_in_hand = self._update_in_hand()
+            if updated == 1:
+                self.tile_in_hand = updated_tile_in_hand
+                self.op_history.append(Operation('eliminate', tile, [[col_index, row_index], [17, repeat_index]]))
+
+            elif updated == 0:
+                self.op_history.append(Operation('draw', tile, [col_index, row_index]))
+
+
             if self._check_succeed():
                 print('Success!')
                 return 1
@@ -125,11 +161,49 @@ class Board:
 
         return 0
 
+
+    def undo(self):
+        
+        # no history
+        if len(self.op_history) == 0:
+            return
+
+        operation = self.op_history.pop()
+        op_type = operation.get_type()
+        if op_type == 'draw':
+            pos_on_board = operation.get_pos()
+            self.col_list[pos_on_board[0]].append(operation.get_tile())
+            for i in range(len(self.tile_in_hand)):
+                if self.tile_in_hand[i].name == operation.get_tile().name:
+                    self.tile_in_hand.pop(i)
+
+
+        elif op_type == 'eliminate':
+            pos1 = operation.get_pos()[0]
+            pos2 = operation.get_pos()[1]
+            tile = operation.get_tile()
+
+            # pos1
+            if pos1[0] == 17: # in hand
+                self.tile_in_hand.insert(pos1[1], tile)
+            else: # on board
+                self.col_list[pos1[0]].append(tile)
+            
+            # pos2
+            if pos2[0] == 17:
+                self.tile_in_hand.insert(pos2[1], tile)
+            else:
+                self.col_list[pos2[0]].append(tile)
+    
+
     def get_len(self):
         return len(self.tile_list)
 
     
     def _eliminate_chosen(self):
+        ''' update `list` self.chosen 
+        NOTE: Eliminate two chosen tiles if they satisfy the rules.
+        '''
         if len(self.chosen) < 2:
             return
         elif len(self.chosen) == 2:
@@ -146,8 +220,12 @@ class Board:
                             if i != pos1[1] and i != pos2[1]:
                                 new_in_hand.append(self.tile_in_hand[i])
 
+                        e_tile = self.tile_in_hand[pos1[1]]
                         self.tile_in_hand = new_in_hand
                         self.chosen = []
+
+                        # NOTE add history
+                        self.op_history.append(Operation('eliminate', e_tile, list_pos=[pos1, pos2]))
                 
                 # not in hand
                 else:
@@ -157,9 +235,12 @@ class Board:
                     (pos1[1] == col_len-2 and pos2[1] == col_len-1):
                         if self.col_list[pos1[0]][pos1[1]].name == self.col_list[pos2[0]][pos2[1]].name:
                             # pop top two
-                            self.col_list[pos1[0]].pop(len(self.col_list[pos1[0]])-1)
-                            self.col_list[pos1[0]].pop(len(self.col_list[pos1[0]])-1)
+                            self.col_list[pos1[0]].pop()
+                            e_tile = self.col_list[pos1[0]].pop()
                             self.chosen = []
+
+                            # NOTE add history
+                            self.op_history.append(Operation('eliminate', e_tile, list_pos=[pos1, pos2]))
 
 
             else: # different col
@@ -177,9 +258,12 @@ class Board:
                         return
                     else:
                         if self.tile_in_hand[hand_pos[1]].name == self.col_list[board_pos[0]][board_pos[1]].name:
-                            self.tile_in_hand.pop(hand_pos[1])
+                            e_tile = self.tile_in_hand.pop(hand_pos[1])
                             self.col_list[board_pos[0]].pop(board_pos[1])
                             self.chosen = []
+
+                            # NOTE add history
+                            self.op_history.append(Operation('eliminate', e_tile, list_pos=[board_pos, hand_pos]))
 
                 # both on board
                 else:
@@ -189,12 +273,27 @@ class Board:
                         return
                     else: # two head
                         if self.col_list[pos1[0]][pos1[1]].name == self.col_list[pos2[0]][pos2[1]].name:
-                            self.col_list[pos1[0]].pop(len(self.col_list[pos1[0]])-1)
-                            self.col_list[pos2[0]].pop(len(self.col_list[pos2[0]])-1)
-                            self.chosen = []           
+                            self.col_list[pos1[0]].pop()
+                            e_tile = self.col_list[pos2[0]].pop()
+                            self.chosen = []
+
+                            # NOTE add history
+                            self.op_history.append(Operation('eliminate', e_tile, list_pos=[pos1, pos2]))
+                                     
 
 
     def _list_position(self, position):
+        ''' Return the list index according to position
+        Arg - position returned by 'pygame.mouse.get_pos()' 
+        Return - three element tuple (a, x, y)
+               - a - 0 neither in hand or board
+                   - 1 on board
+                   - 2 in hand
+               - x if a=1, index of the column if on board
+                   if a=2, 17
+               - y if a=1, index of the row if on board
+                   if a=2, index of `list` tile_in_hand
+        '''
         board_or_hand = 0 # board = 1, hand = 2, Neither = 0
 
         col = math.floor((position[0]-50)/TILE_ROW)
@@ -220,12 +319,13 @@ class Board:
 
 
     def _top(self, col_index):
+        ''' Return the top tile of this column '''
         return self.col_list[col_index][len(self.col_list[col_index])-1]
 
 
     def _top_two_same(self, col_index):
+        ''' check if this column has two same tiles on top '''
         length = len(self.col_list[col_index])
-        # print('{}, {}'.format(self.col_list[col_index][length-1].name, self.col_list[col_index][length-2].name))
         if self.col_list[col_index][length-1].name == self.col_list[col_index][length-2].name:
             return True
         else:
@@ -233,12 +333,20 @@ class Board:
 
 
     def _update_in_hand(self):
-        # 0 1 2 3 4
+        '''Eliminate same tiles in the hand
+        NOTE: There can only be two same tiles in the hand
+
+        Return - `int`, `list`, `list`
+        `int`   0 for no update, 1 for update
+        `list`  updated list
+        `int`  repeat index if updated
+        '''
+
         tile_in_hand_new = []
         repeat_list = self._find_same_item(self.tile_in_hand)
 
         if len(repeat_list) == 0:
-            return self.tile_in_hand
+            return [0, self.tile_in_hand, 0]
 
         repeat1 = repeat_list[0][0]
         repeat2 = repeat_list[0][1]
@@ -247,7 +355,7 @@ class Board:
             if index != repeat1 and index != repeat2:
                 tile_in_hand_new.append(self.tile_in_hand[index])
         
-        return tile_in_hand_new
+        return [1, tile_in_hand_new, repeat1]
     
 
     def _check_fail(self):
@@ -297,6 +405,11 @@ class Board:
         
 
     def _find_same_item(self, array):
+        ''' get the same item in array
+        Arg - `list`
+        Return - `list`, every element is a `list` containing two index
+        ''' 
+
         same_list = []
         # repeat1 = -1; repeat2 = -1
         for i in range(len(array)-1):

@@ -29,4 +29,5 @@ Click the left button of your mouse to select tiles that can be eliminated. Clic
 * [x] Add game over Effects
 * [x] Add Elimination Effects
 * [x] Add replay
+* [x] Add revocation
 * [ ] Starting GUI.
