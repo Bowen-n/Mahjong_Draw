@@ -8,9 +8,9 @@ That is, there are 17 columns, in each column, there are 8 tiles.
 
 The first tile of one column is called **Head**.
 
-If there two columns that have the same Head, these two Heads can be eliminated from the board.
-If no Head can be eliminated, you can draw a tile in your hand and continue eliminating Heads.
-Besides, the tile in your hand can be eliminated with a Head if they are same.
+If there two columns that have the same **Head**, these two **Heads** can be eliminated from the board.
+If no **Head** can be eliminated, you can draw a tile in your hand and continue eliminating Heads.
+Besides, the tile in your hand can be eliminated with a **Head** if they are same.
 
 You can at most have three tiles in your hand, or you fail the game.
 If all tiles are eliminated, then you succeed.
