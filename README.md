@@ -2,7 +2,7 @@
 A Mahjong Draw Game written for my grandparents.
 
 
-### Rule
+## Rule
 There are 136 tiles in Mahjong. In this game, tiles are ordered in rectangular 17*8 board.
 That is, there are 17 columns, in each column, there are 8 tiles.
 
@@ -15,19 +15,21 @@ Besides, the tile in your hand can be eliminated with a Head if they are same.
 You can at most have three tiles in your hand, or you fail the game.
 If all tiles are eliminated, then you succeed.
 
-### Screenshot
+## Screenshot
+#### v2.2
 ![Demo](img/demo.jpg)
+#### v2.3 Undo button
+![Demo2](img/demo2.jpg)
 
-
-### Use
+## Use
 Run `$python mahjong.py`
 
 Click the left button of your mouse to select tiles that can be eliminated. Click the right button to draw a tile.
 
 
-### TODO :triangular_flag_on_post:
+## TODO :triangular_flag_on_post:
 * [x] Add game over Effects
 * [x] Add Elimination Effects
 * [x] Add replay
-* [x] Add revocation
+* [x] Add undo
 * [ ] Starting GUI.
